@@ -13,7 +13,7 @@ namespace shutmypc
     public class Worker : BackgroundService
     {
         private HttpListener _listener;
-        private const string url = "http://localhost:5000/hibernation/";
+        private const string url = "http://192.168.1.99:5000/hibernation/";
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -28,12 +28,11 @@ namespace shutmypc
                 var context = await _listener.GetContextAsync();
                 if (context.Request.HttpMethod == "POST")
                 {
+                    context.Response.StatusCode = (int)HttpStatusCode.OK;
+                    context.Response.Close();
                     HibernatePC();
                     Console.WriteLine("Received hook, hibernating PC.");
                 }
-
-                context.Response.StatusCode = (int)HttpStatusCode.OK;
-                context.Response.Close();
             }
         }
 
